@@ -26,5 +26,10 @@ class MyTopo( Topo ):
 
         # TODO: Add all the other links similar to one given below 
         self.addLink( leftHost, leftSwitch )
+        # modified 4 lines
+        self.addLink( leftHost2, leftSwitch )
+        self.addLink( leftHost3, leftSwitch )
+        self.addLink( rightHost, rightSwitch )
+        self.addLink( leftSwitch, rightSwitch )
 
 topos = { 'mytopo': ( lambda: MyTopo() ) }
