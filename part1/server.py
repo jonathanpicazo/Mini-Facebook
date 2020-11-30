@@ -18,6 +18,11 @@ def stringToTuple(s):
 	t = s.split("<>")
 	return t
 
+def findUser(search ,myList):
+	for i in range(0, len(myList)):
+		if myList[i][0] == search:
+			return i
+	return -1
 '''
 Create Socket
 '''
@@ -51,6 +56,7 @@ message queue for each user
 clients = []
 # TODO: Part-1 : create a var to store username && password. NOTE: A set of username/password pairs are hardcoded here. 
 # e.g. userpass = [......]
+userpass = [['user1', 'pass1'], ['user2', 'pass2'], ['user3', 'pass3']]
 messages = [[],[],[]]
 count = 0
 
@@ -60,6 +66,8 @@ Function for handling connections. This will be used to create threads
 def clientThread(conn):
 	global clients
 	global count
+	global userpass
+	global messages
 	# Tips: Sending message to connected client
 	conn.send('Welcome to the server. Type something and hit enter\n') #send only takes string
 	rcv_msg = conn.recv(1024)
@@ -81,9 +89,29 @@ def clientThread(conn):
 				break
 			if option == str(1):
 				print 'user logout'
+				break
 				# TODO: Part-1: Add the logout processing here	
+
 			elif option == str(2):
 				print 'Post a message'
+				rcv_user = conn.recv(1024)
+				print rcv_user
+				if findUser(rcv_user, userpass) == -1:
+					break
+				else:
+					rcv_msg = conn.recv(1024)
+					addToList = rcv_user + '<>' + rcv_msg
+					addToList = stringToTuple(addToList)
+					messages[user].append(addToList)
+					++count
+
+			elif option == str(3):
+				# change password
+				rcv_msg = conn.recv(1024)
+				rcv_msg = stringToTuple(rcv_msg)
+				userpass[user] = rcv_msg
+				print userpass[user]
+
 			else:
 				try :
 					conn.sendall('Option not valid')
