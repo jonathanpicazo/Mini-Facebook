@@ -3,6 +3,7 @@ import sys
 from thread import *
 import getpass
 import os
+import time
 
 '''
 Function Definition
@@ -11,7 +12,6 @@ def receiveThread(s):
 	while True:
 		try:
 			reply = s.recv(4096) # receive msg from server
-			
 			# You can add operations below once you receive msg
 			# from the server
 
@@ -44,7 +44,9 @@ print 'Socket Created'
 '''
 Resolve Hostname
 '''
-host = '10.0.0.4'
+
+host = 'localhost'
+#host = '10.0.0.4'
 port = 9486
 try:
 	remote_ip = socket.gethostbyname(host)
@@ -90,11 +92,14 @@ if reply == 'valid': # TODO: use the correct string to replace xxx here!
 	# Start the receiving thread
 	start_new_thread(receiveThread ,(s,))
 
+	# search for messages
+
+
 	message = ""
 	while True :
 
 		# TODO: Part-1.4: User should be provided with a menu. Complete the missing options in the menu!
-		message = raw_input("Choose an option (type the number): \n 1. Logout \n 2. Post a message \n 3. Change password \n")
+		message = raw_input("Choose an option (type the number): \n 1. Logout \n 2. Post a message \n 3. Change password \n 4. View messages \n")
 		
 		try :
 			# TODO: Send the selected option to the server
@@ -122,9 +127,14 @@ if reply == 'valid': # TODO: use the correct string to replace xxx here!
 				s.sendall(str(3))
 				s.sendall(username + '<>' + newpass)
 
-			if message == str(4)
+			if message == str(4):
 				# view messages
 				print 'View messages'
+				s.send(str(4))
+				time.sleep(2)
+				getmsg = s.recv(1024)
+				print getmsg
+
 
 			# Add other operations, e.g. change password
 		except socket.error:

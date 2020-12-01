@@ -23,10 +23,18 @@ def findUser(search ,myList):
 		if myList[i][0] == search:
 			return i
 	return -1
+
+def getMessages(user, myList):
+	retString = ''
+	size = len(myList[user])
+	for i in range(0, size):
+		retString += myList[user][i]
+	return retString
 '''
 Create Socket
 '''
-HOST = ''	# Symbolic name meaning all available interfaces
+HOST = 'localhost'
+#HOST = ''	# Symbolic name meaning all available interfaces
 PORT = 9486	# Arbitrary non-privileged port
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -80,6 +88,8 @@ def clientThread(conn):
 		except socket.error:
 			print 'Send failed'
 			sys.exit()
+
+		# 
 			
 		# Tips: Infinite loop so that function do not terminate and thread do not end.
 		while True:
@@ -103,6 +113,7 @@ def clientThread(conn):
 					addToList = rcv_user + '<>' + rcv_msg
 					addToList = stringToTuple(addToList)
 					messages[user].append(addToList)
+					print messages[user]
 					++count
 
 			elif option == str(3):
@@ -111,6 +122,16 @@ def clientThread(conn):
 				rcv_msg = stringToTuple(rcv_msg)
 				userpass[user] = rcv_msg
 				print userpass[user]
+
+			elif option == str(4):
+				payload = ''
+				payload = getMessages(user, messages)
+				# if payload == '':
+				# 	conn.sendall('Empty')
+				print 'here'
+				#conn.sendall(payload)
+				payload = 'test msg'
+				conn.send(payload)
 
 			else:
 				try :
